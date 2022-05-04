@@ -31,6 +31,10 @@ sumDigits (x:xs) = sum (toDigits x) + sumDigits xs
 validate :: Integer -> Bool
 validate n = sumDigits (doubleEveryOther (toDigits n)) `mod` 10 == 0
 
+-- this seems to do less work
+validate' :: Integer -> Bool
+validate' n = sumDigits (doubleEveryOther' (toDigitsRev n))  `mod` 10 == 0
+
 -- #5
 type Peg = String
 type Move = (Peg, Peg)
