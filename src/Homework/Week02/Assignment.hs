@@ -18,7 +18,6 @@ parseMessage :: String -> LogMessage
 parseMessage = (parseWords . words)
 
 parseWords :: [String] -> LogMessage
-parseWords [] = Unknown []
 parseWords ("I" : t : xs)     = LogMessage Info               (read t) (unwords xs)
 parseWords ("W" : t : xs)     = LogMessage Warning            (read t) (unwords xs)
 parseWords ("E" : e : t : xs) = LogMessage ((Error . read) e) (read t) (unwords xs)
@@ -26,7 +25,7 @@ parseWords s                  = (Unknown . unwords) s
 
 -- #1b
 parse :: String -> [LogMessage]
-parse s = map parseMessage $ lines s
+parse = map parseMessage . lines
 
 --parse = parseLines . lines
 --parseLines :: [String] -> [LogMessage]
