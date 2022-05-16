@@ -38,19 +38,30 @@ parse = map parseMessage . lines
 --  deriving (Show, Eq)
 insert :: LogMessage -> MessageTree -> MessageTree
 insert (Unknown _) t = t
-insert l@(LogMessage _ _ _) Leaf = Node Leaf l Leaf
-insert l@(LogMessage _ ts _) mt@(Node tl m@(LogMessage _ mts _) tr) = if ts < mts
-                                                                      then Node (insert l tl) m tr
-                                                                      else Node tl m (insert l tr)
+insert newmsg@(LogMessage _ _ _) Leaf = Node Leaf newmsg Leaf
+insert newmsg@(LogMessage _ ts _) (Node left oldmsg@(LogMessage _ mts _) right)
+  | ts < mts  = Node (insert newmsg left) oldmsg right
+  | otherwise = Node left oldmsg (insert newmsg right)
 
 -- #3
 build :: [LogMessage] -> MessageTree
-build = undefined
+build xs = foldl (\tree msg -> insert msg tree) Leaf xs
+
+--build xs = buildTree Leaf xs
+--buildTree :: MessageTree -> [LogMessage] -> MessageTree
+--buildTree tree []     = tree
+--buildTree tree (x:xs) = buildTree (insert x tree) xs
 
 -- #4
 inOrder :: MessageTree -> [LogMessage]
-inOrder = undefined
+inOrder Leaf = []
+inOrder (Node left msg right) = inOrder left ++ [msg] ++ inOrder right
 
 -- #5
 whatWentWrong :: [LogMessage] -> [String]
-whatWentWrong = undefined
+--whatWentWrong xs = map (\(LogMessage _ _ s) -> s) $ filter (\(LogMessage (Error e) _ _) -> e > 50) $ inOrder $ build xs
+whatWentWrong xs = map (\(LogMessage _ _ s) -> s) $ filter isRelevantErrorLog $ inOrder $ build xs
+
+isRelevantErrorLog :: LogMessage -> Bool
+isRelevantErrorLog (LogMessage (Error e) _ _) = e > 50
+isRelevantErrorLog _ = False
