@@ -33,8 +33,15 @@ parse = map parseMessage . lines
 --parseLines (x:xs) = parseMessage x : parseLines xs
 
 -- #2
+--data MessageTree = Leaf
+--                 | Node MessageTree LogMessage MessageTree
+--  deriving (Show, Eq)
 insert :: LogMessage -> MessageTree -> MessageTree
-insert = undefined
+insert (Unknown _) t = t
+insert l@(LogMessage _ _ _) Leaf = Node Leaf l Leaf
+insert l@(LogMessage _ ts _) mt@(Node tl m@(LogMessage _ mts _) tr) = if ts < mts
+                                                                      then Node (insert l tl) m tr
+                                                                      else Node tl m (insert l tr)
 
 -- #3
 build :: [LogMessage] -> MessageTree
