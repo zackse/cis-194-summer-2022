@@ -33,9 +33,6 @@ parse = map parseMessage . lines
 --parseLines (x:xs) = parseMessage x : parseLines xs
 
 -- #2
---data MessageTree = Leaf
---                 | Node MessageTree LogMessage MessageTree
---  deriving (Show, Eq)
 insert :: LogMessage -> MessageTree -> MessageTree
 insert (Unknown _) t = t
 insert newmsg@(LogMessage _ _ _) Leaf = Node Leaf newmsg Leaf
@@ -59,9 +56,11 @@ inOrder (Node left msg right) = inOrder left ++ [msg] ++ inOrder right
 
 -- #5
 whatWentWrong :: [LogMessage] -> [String]
---whatWentWrong xs = map (\(LogMessage _ _ s) -> s) $ filter (\(LogMessage (Error e) _ _) -> e > 50) $ inOrder $ build xs
-whatWentWrong xs = map (\(LogMessage _ _ s) -> s) $ filter isRelevantErrorLog $ inOrder $ build xs
+whatWentWrong xs = map (\(LogMessage _ _ s) -> s) . filter isRelevantErrorLog $ inOrder $ build xs
 
 isRelevantErrorLog :: LogMessage -> Bool
 isRelevantErrorLog (LogMessage (Error e) _ _) = e > 50
 isRelevantErrorLog _ = False
+
+-- doesn't work because lambda pattern is incomplete
+--whatWentWrong xs = map (\(LogMessage _ _ s) -> s) $ filter (\(LogMessage (Error e) _ _) -> e > 50) $ inOrder $ build xs
