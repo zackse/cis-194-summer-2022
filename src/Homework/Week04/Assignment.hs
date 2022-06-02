@@ -115,7 +115,7 @@ dropLeadingWhitespace (x:xs)
 
 -- #16
 firstLetters :: [String] -> [Char]
-firstLetters = undefined
+firstLetters xs = map (\a -> fromJust (safeHead a)) $ filter (\a -> isLetter (fromMaybe ' ' (safeHead a))) xs
 
 -- #17
 asList :: [String] -> String
