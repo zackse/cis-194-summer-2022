@@ -119,4 +119,9 @@ firstLetters xs = map (\a -> fromJust (safeHead a)) $ filter (\a -> isLetter (fr
 
 -- #17
 asList :: [String] -> String
-asList = undefined
+asList xs = "[" ++ asList' xs ++ "]"
+
+asList' :: [String] -> String
+asList' [] = ""
+asList' (x:[]) = x
+asList' (x:xs) = x ++ "," ++ (asList' xs)
