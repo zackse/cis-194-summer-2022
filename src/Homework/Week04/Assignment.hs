@@ -105,7 +105,7 @@ allCaps' xs = xs == filter (\a -> isUpper (fromMaybe 'a' (safeHead a))) xs
 
 -- #15
 dropTrailingWhitespace :: String -> String
-dropTrailingWhitespace s = reverse . dropLeadingWhitespace $ reverse s
+dropTrailingWhitespace = reverse . dropLeadingWhitespace . reverse
 
 dropLeadingWhitespace :: String -> String
 dropLeadingWhitespace [] = []
@@ -115,7 +115,7 @@ dropLeadingWhitespace (x:xs)
 
 -- #16
 firstLetters :: [String] -> [Char]
-firstLetters xs = map (\a -> fromJust (safeHead a)) $ filter (\a -> isLetter (fromMaybe ' ' (safeHead a))) xs
+firstLetters = map (\a -> fromJust (safeHead a)) . filter (\a -> isLetter (fromMaybe ' ' (safeHead a)))
 
 -- #17
 asList :: [String] -> String
